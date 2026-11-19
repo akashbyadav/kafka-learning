@@ -1,16 +1,17 @@
 # day 1 --> Producer, Consumer, Admin Client
 # Producer methods
 
-produce, produce_batch, poll, flush, delivery_callback,list_topics(),init_transactions/ begin_transaction/ commit_transaction/abort_transaction(Wraps multi-partition writes in atomic transactions to guarantee exactly-once delivery)
+produce, produce_batch, poll(process delivery events), flush(wait until all queued messgaes reaches kafka), delivery_callback,list_topics(),init_transactions/ begin_transaction/ commit_transaction/abort_transaction(Wraps multi-partition writes in atomic transactions to guarantee exactly-once delivery)
 
 
 Producer does not send immediately it is asynchronous, produce() -> buffer -> broker
+produce() -> adds records to local queue
 
 ## configurations
 #### bootstrap.servers -> 
 my server ip
 #### retries -> might be related to number of retries  
-#### acks-> 
+#### acks-> 0= no, 1=leader, all 
 specifies number of broker acknowledgment producer require before considering a request complete
 #### enable.idempotence -> 
 ensure that retries do not write duplicate to partition when its 'true'
@@ -32,7 +33,7 @@ subscribe, poll, commit, close(graceful_shutdown), seek(moves pointer to specifi
 ## configurations
 #### group.id -> 
 assigns this consumer to a group
-#### auto.offset.reset -> 
+#### auto.offset.reset -> earliest, latest
 read stratergy
 #### enable.auto.commit
 #### session.timeout.ms 
@@ -45,7 +46,7 @@ https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/i
 
 # Message
 
-error, key, value, partition, offset, timestamp
+error, key, value, partition, offset, timestamp, topic
 
 # AdminClient and SchemaRegistryClient
 
